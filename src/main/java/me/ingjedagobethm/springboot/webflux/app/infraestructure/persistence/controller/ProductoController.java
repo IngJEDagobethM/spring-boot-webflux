@@ -43,4 +43,14 @@ public class ProductoController {
         model.addAttribute("titulo", "Listado Productos (DataDriver)");
         return "listar";
     }
+
+    @GetMapping("/productos/chunked")
+    public String listarChunked(Model model){
+        Flux<ProductoEntity> productos = productoRepository.listarProductos()
+                .repeat(20000);
+
+        model.addAttribute("productos", productos);
+        model.addAttribute("titulo", "Listado Productos (Chunked)");
+        return "listar";
+    }
 }
