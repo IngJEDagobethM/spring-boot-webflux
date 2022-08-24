@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
+
+import java.time.Duration;
 
 @RequiredArgsConstructor
 @Controller
@@ -28,6 +31,16 @@ public class ProductoController {
 
         model.addAttribute("productos", productos);
         model.addAttribute("titulo", "Listado Productos");
+        return "listar";
+    }
+
+    @GetMapping("/productos/datadriver")
+    public String listarDataDriver(Model model){
+        Flux<ProductoEntity> productos = productoRepository.listarProductos()
+                .delayElements(Duration.ofSeconds(2));
+        // new ReactiveDataDriverContextVariable(productos, 1) es como se maneja la contrapresión (flujo, elementos_a_mostrar)
+        model.addAttribute("productos", new ReactiveDataDriverContextVariable(productos, 1));
+        model.addAttribute("titulo", "Listado Productos (DataDriver)");
         return "listar";
     }
 }
