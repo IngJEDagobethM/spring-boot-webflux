@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import reactor.core.publisher.Flux;
 
+import java.util.Date;
+
 @SpringBootApplication
 public class SpringBootWebfluxApplication implements CommandLineRunner {
 
@@ -27,11 +29,20 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
+
+		productoRepository.eliminarColeccion("productos").subscribe();
+
+		// map no sirve porque devuelve un Mono<ProductoEntity>, en cambio,
+		// flatmap lo integra al mismo flujo retornando ProductoEntity
 		Flux.just(
                 ProductoEntity.builder().nombre("TV Panasonic Led 40\"").precio(1440000.0).build(),
-                ProductoEntity.builder().nombre("TV Sony Led 40\"").precio(2600000.0).build()
+                ProductoEntity.builder().nombre("TV Sony Led 40\"").precio(2600000.0).build(),
+				ProductoEntity.builder().nombre("TV LG Led 40\"").precio(1600000.0).build()
         )
-				.flatMap(productoRepository::insertarProducto)
+				.flatMap(producto -> {
+					producto.setCreateAt(new Date());
+					return productoRepository.insertarProducto(producto);
+				})
 				.subscribe(producto -> log.info(producto.getNombre()));
 	}
 
