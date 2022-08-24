@@ -1,8 +1,8 @@
-package me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.controller;
+package me.ingjedagobethm.springboot.webflux.app.infraestructure.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.ingjedagobethm.springboot.webflux.app.application.handler.ProductHandler;
 import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.entity.ProductoEntity;
-import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.repository.ProductoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,12 +18,12 @@ import java.time.Duration;
 public class ProductoController {
 
     private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
-    private final ProductoRepository productoRepository;
+    private final ProductHandler productHandler;
 
     @GetMapping({"/productos", "/"})
     public String listar(Model model){
-        //Flux<ProductoEntity> productos = productoRepository.listarProductos();
-        Flux<ProductoEntity> productos = productoRepository.listarProductosNombreUpperCase();
+        //Flux<ProductoEntity> productos = productHandler.execGetProducts();
+        Flux<ProductoEntity> productos = productHandler.execGetProductsUpperCase();
 
         // El observador se subscribe internamente al trabajar con thymeleaf,
         // pero, es posible subscribir otro observador.
@@ -36,7 +36,7 @@ public class ProductoController {
 
     @GetMapping("/productos/datadriver")
     public String listarDataDriver(Model model){
-        Flux<ProductoEntity> productos = productoRepository.listarProductos()
+        Flux<ProductoEntity> productos = productHandler.execGetProducts()
                 .delayElements(Duration.ofSeconds(2));
         // new ReactiveDataDriverContextVariable(productos, 1) es como se maneja la contrapresión (flujo, elementos_a_mostrar)
         model.addAttribute("productos", new ReactiveDataDriverContextVariable(productos, 1));
@@ -46,8 +46,7 @@ public class ProductoController {
 
     @GetMapping("/productos/chunked")
     public String listarChunked(Model model){
-        Flux<ProductoEntity> productos = productoRepository.listarProductos()
-                .repeat(20000);
+        Flux<ProductoEntity> productos = productHandler.execGetProductsMasive();
 
         model.addAttribute("productos", productos);
         model.addAttribute("titulo", "Listado Productos (Chunked)");

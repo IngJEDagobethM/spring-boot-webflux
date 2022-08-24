@@ -1,27 +1,23 @@
 package me.ingjedagobethm.springboot.webflux.app;
 
+import lombok.RequiredArgsConstructor;
+import me.ingjedagobethm.springboot.webflux.app.application.handler.ProductHandler;
 import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.entity.ProductoEntity;
-import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.repository.ProductoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import reactor.core.publisher.Flux;
 
 import java.util.Date;
 
+@RequiredArgsConstructor
 @SpringBootApplication
 public class SpringBootWebfluxApplication implements CommandLineRunner {
 
 	private static final Logger log = LoggerFactory.getLogger(SpringBootWebfluxApplication.class);
-	@Autowired
-	private final ProductoRepository productoRepository;
-
-	public SpringBootWebfluxApplication(ProductoRepository productoRepository) {
-		this.productoRepository = productoRepository;
-	}
+	private final ProductHandler productHandler;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootWebfluxApplication.class, args);
@@ -30,7 +26,7 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-		productoRepository.eliminarColeccion("productos").subscribe();
+		productHandler.execDropCollection("productos").subscribe();
 
 		// map no sirve porque devuelve un Mono<ProductoEntity>, en cambio,
 		// flatmap lo integra al mismo flujo retornando ProductoEntity
@@ -44,7 +40,7 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
         )
 				.flatMap(producto -> {
 					producto.setCreateAt(new Date());
-					return productoRepository.insertarProducto(producto);
+					return productHandler.execSaveProduct(producto);
 				})
 				.subscribe(producto -> log.info(producto.getNombre()));
 	}
