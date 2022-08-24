@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Title</title>
+</head>
+<body>
+    <header>
+        <menu>
+            <li>
+                <ul><a th:href="@{/productos}">Inicio</a></ul>
+            </li>
+        </menu>
+    </header>
+    <section>
+        <div>
+            <form th:action="@{/productos/}" method="post" th:object="${producto}">
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <div><input type="text" th:field="*{nombre}"></div>
+                </div>
+                <div>
+                    <label for="precio">Precio</label>
+                    <div><input type="text" th:field="*{precio}"></div>
+                </div>
+                <div>
+                    <label for="createAt">Fecha</label>
+                    <div><input type="date" th:field="*{createAt}"></div>
+                </div>
+                <div>
+                    <div><input type="submit" value="Guardar"></div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <footer>
+        <p>Programación Reactiva: UDEMY Pragma - Ing.JEDagobethM - Agosto 2022.</p>
+    </footer>
+</body>
+</html>

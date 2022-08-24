@@ -5,24 +5,36 @@
     <title th:text="${titulo}">Title</title>
 </head>
 <body>
-    <h1 th:text="${titulo}">BodyTitle</h1>
-    <table>
-        <thead>
+    <header>
+        <menu>
+            <li>
+                <ul><a th:href="@{/productos/}">Nuevo Producto</a></ul>
+            </li>
+        </menu>
+    </header>
+    <section>
+        <h1 th:text="${titulo}">BodyTitle</h1>
+        <table>
+            <thead>
             <tr>
                 <th>id</th>
                 <th>nombre</th>
                 <th>precio</th>
                 <th>fecha</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr th:each="producto: ${productos}">
                 <td th:text="${producto.id}"></td>
                 <td th:text="${producto.nombre}"></td>
                 <td th:text="${producto.precio}"></td>
                 <td th:text="${producto.createAt}"></td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </section>
+    <footer>
+        <p>Programación Reactiva: UDEMY Pragma - Ing.JEDagobethM - Agosto 2022.</p>
+    </footer>
 </body>
 </html>
