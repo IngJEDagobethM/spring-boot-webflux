@@ -37,7 +37,10 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 		Flux.just(
                 ProductoEntity.builder().nombre("TV Panasonic Led 40\"").precio(1440000.0).build(),
                 ProductoEntity.builder().nombre("TV Sony Led 40\"").precio(2600000.0).build(),
-				ProductoEntity.builder().nombre("TV LG Led 40\"").precio(1600000.0).build()
+				ProductoEntity.builder().nombre("TV LG Led 40\"").precio(1600000.0).build(),
+				ProductoEntity.builder().nombre("Nevera Samsung NoFrost 180lts").precio(2200000.0).build(),
+				ProductoEntity.builder().nombre("Nevera Centrales Frost 140lts").precio(1050000.0).build(),
+				ProductoEntity.builder().nombre("Nevera Haceb Frost 160lts").precio(900000.0).build()
         )
 				.flatMap(producto -> {
 					producto.setCreateAt(new Date());
