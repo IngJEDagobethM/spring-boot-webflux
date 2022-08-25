@@ -31,7 +31,17 @@ public class ProductoRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Mono<ProductoEntity> productById(String id) {
+    public Mono<ProductoEntity> getProductById(String id) {
         return productoDao.findById(id);
+    }
+
+    @Override
+    public Mono<Void> deleteProductById(String id) {
+        return productoDao.deleteById(id);
+    }
+
+    @Override
+    public Mono<Void> deleteProduct(ProductoEntity productoEntity) {
+        return productoDao.delete(productoEntity);
     }
 }

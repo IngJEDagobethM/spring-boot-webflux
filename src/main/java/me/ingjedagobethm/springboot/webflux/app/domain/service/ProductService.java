@@ -38,12 +38,16 @@ public class ProductService {
     }
 
     public Mono<ProductoEntity> getById(String id){
-        return productRepository.productById(id);
+        return productRepository.getProductById(id);
     }
 
     public Mono<ProductoEntity> productById(String id){
         // practicando la transformación de flujos
         Flux<ProductoEntity> products = productRepository.getProducts();
         return products.filter(p -> p.getId().equalsIgnoreCase(id)).next();
+    }
+
+    public Mono<Void> deleteProduct(ProductoEntity productoEntity){
+        return productRepository.deleteProduct(productoEntity);
     }
 }

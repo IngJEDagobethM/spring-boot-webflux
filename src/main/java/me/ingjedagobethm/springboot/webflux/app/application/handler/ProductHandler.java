@@ -46,4 +46,8 @@ public class ProductHandler {
         Flux<ProductoEntity> products = productService.getProducts();
         return products.filter(p -> p.getId().equalsIgnoreCase(id)).next();
     }
+
+    public Mono<Void> execDeleteProduct(ProductoEntity productoEntity){
+        return productService.deleteProduct(productoEntity);
+    }
 }

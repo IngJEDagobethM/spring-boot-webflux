@@ -8,5 +8,7 @@ public interface ProductRepository {
     Mono<ProductoEntity> saveProduct(ProductoEntity productoEntity);
     Mono<Void> dropColection(String colection);
     Flux<ProductoEntity> getProducts();
-    Mono<ProductoEntity> productById(String id);
+    Mono<ProductoEntity> getProductById(String id);
+    Mono<Void> deleteProductById(String id);
+    Mono<Void> deleteProduct(ProductoEntity productoEntity);
 }
