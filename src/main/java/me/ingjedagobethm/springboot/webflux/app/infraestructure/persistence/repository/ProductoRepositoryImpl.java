@@ -12,8 +12,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Repository
 public class ProductoRepositoryImpl implements ProductRepository {
-    private final ProductoDao productoDao;
     private final ReactiveMongoTemplate mongoTemplate;
+    private final ProductoDao productoDao;
 
     @Override
     public Mono<ProductoEntity> saveProduct(ProductoEntity productoEntity) {
