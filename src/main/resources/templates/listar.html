@@ -35,6 +35,10 @@
             </tbody>
         </table>
     </section>
+    <aside>
+        <div th:if="${param.error != null}" th:text="${param.error}"></div>
+        <div th:if="${param.success != null}" th:text="${param.success}"></div>
+    </aside>
     <footer>
         <p>Programación Reactiva: UDEMY Pragma - Ing.JEDagobethM - Agosto 2022.</p>
     </footer>
