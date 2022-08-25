@@ -1,7 +1,9 @@
 package me.ingjedagobethm.springboot.webflux.app.infraestructure.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.ingjedagobethm.springboot.webflux.app.application.handler.CategoryHandler;
 import me.ingjedagobethm.springboot.webflux.app.application.handler.ProductHandler;
+import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.entity.CategoriaEntity;
 import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.entity.ProductoEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ public class ProductoController {
 
     private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
     private final ProductHandler productHandler;
+    private final CategoryHandler categoryHandler;
 
     @GetMapping({"/productos", "/"})
     public Mono<String> listar(Model model){
@@ -68,18 +71,22 @@ public class ProductoController {
 
     @PostMapping("/productos/")
     public Mono<String> insertar(@Valid @ModelAttribute("producto") ProductoEntity producto, BindingResult result, Model model/*, SessionStatus status*/){
+        // Se sebe registrar la entidad debido a que no se llama igual que el atributo usando @ModelAttribute("")
         if (result.hasErrors()){
             model.addAttribute("titulo", "Error en Validación de Producto");
-            //model.addAttribute("producto", producto); // Se sebe registrar la entidad debido a que no se llama igual que el atributo.
             return Mono.just("formulario");
         }
         if (producto.getCreateAt() == null){
             producto.setCreateAt(new Date());
         }
         //status.setComplete();
-        return productHandler.execSaveProduct(producto)
+        Mono<CategoriaEntity> categoria = categoryHandler.execGetById(producto.getCategoria().getId());
+        return categoria.flatMap(c -> { // Flujo Mono de Categoria se usa para asignar la NUEVA Categoria del Producto
+            producto.setCategoria(c);
+            return productHandler.execSaveProduct(producto); // FlaMap transforma a Flujo Mono de Producto
+        })
                 .doOnNext(p -> log.info("Producto <".concat(producto.getId()).concat(" ").concat(p.getNombre()).concat("> insertado.")))
-                .thenReturn("redirect:/productos?error=producto+guardado+con+exito");
+                .thenReturn("redirect:/productos?error=producto+guardado+con+exito"); // Pero en realidad retorno Flujo Mono de String
         //      .then(Mono.just("redirect:/productos"));
     }
 
@@ -128,5 +135,10 @@ public class ProductoController {
                 .flatMap(productHandler::execDeleteProduct)
                 .then(Mono.just("redirect:/productos?success=producto+eliminado+con+exito"))
                 .onErrorResume(ex -> Mono.just("redirect:/productos?error=no+existe+el+producto+a+eliminar"));
+    }
+
+    @ModelAttribute("categorias")
+    public Flux<CategoriaEntity> listarCategorias(){
+        return categoryHandler.execGetCatagories();
     }
 }
