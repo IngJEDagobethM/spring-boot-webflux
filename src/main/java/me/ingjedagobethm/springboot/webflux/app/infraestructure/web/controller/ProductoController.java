@@ -8,13 +8,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+//@SessionAttributes("producto") // Forma de mantener el Id. Se debe llamar el atributo como se pasa en crearFormulario() y actualizar().
 @RequiredArgsConstructor
 @Controller
 public class ProductoController {
@@ -63,10 +67,23 @@ public class ProductoController {
     }
 
     @PostMapping("/productos/")
-    public Mono<String> insertar(ProductoEntity producto){
+    public Mono<String> insertar(ProductoEntity producto/*, SessionStatus status*/){
+        //status.setComplete();
         return productHandler.execSaveProduct(producto)
                 .doOnNext(p -> log.info("Producto <".concat(producto.getId()).concat(" ").concat(p.getNombre()).concat("> insertado.")))
                 .thenReturn("redirect:/productos");
         //      .then(Mono.just("redirect:/productos"));
+    }
+
+    @GetMapping("/productos/{id}")
+    public Mono<String> actualizar(@PathVariable String id, Model model){
+        Mono<ProductoEntity> producto = productHandler.execGetById(id)
+                .doOnNext(p -> log.info("Producto <".concat(p.getId()).concat(" ").concat(p.getNombre()).concat("> preparado para modificar.")))
+                .defaultIfEmpty(new ProductoEntity()); // Para que al fallar devuelva la instancia de Producto vacia y no error.
+
+        model.addAttribute("producto", producto);
+        model.addAttribute("titulo", "Actualizar Producto");
+
+        return Mono.just("formulario");
     }
 }

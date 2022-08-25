@@ -15,6 +15,7 @@
     <section>
         <div>
             <form th:action="@{/productos/}" method="post" th:object="${producto}">
+                <input type="hidden" th:field="*{id}"> <!--Forma con objeto Hidden-->
                 <div>
                     <label for="nombre">Nombre</label>
                     <div><input type="text" th:field="*{nombre}"></div>
