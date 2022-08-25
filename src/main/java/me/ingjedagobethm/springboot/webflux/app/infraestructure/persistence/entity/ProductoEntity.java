@@ -24,4 +24,6 @@ public class ProductoEntity {
     private Double precio;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createAt;
+
+    private CategoriaEntity categoria;
 }
