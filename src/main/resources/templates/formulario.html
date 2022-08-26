@@ -15,9 +15,10 @@
     <section>
         <h1 th:text="${titulo}">BodyTitle</h1>
         <div>
-            <form th:action="@{/productos/}" method="post" th:object="${producto}">
+            <form th:action="@{/productos/}" method="post" th:object="${producto}" enctype="multipart/form-data">
                 <!--Pasar ID con objeto Hidden-->
                 <input type="hidden" th:if="${producto.id != null}" th:field="*{id}">
+                <input type="hidden" th:if="${producto.foto != null}" th:field="*{foto}">
                 <div>
                     <label for="nombre">Nombre</label>
                     <div><input type="text" th:field="*{nombre}"></div>
@@ -41,6 +42,10 @@
                         </select>
                     </div>
                     <!-- <small th:if="${#fields.hasErrors('categoria.id')}" th:errors="*{categoria.id}"></small> -->
+                </div>
+                <div>
+                    <label for="file">Foto</label>
+                    <div><input type="file" name="file"></div>
                 </div>
                 <div>
                     <div><input type="submit" value="Guardar"></div>

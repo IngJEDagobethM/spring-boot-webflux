@@ -29,4 +29,6 @@ public class ProductoEntity {
 
     @Valid
     private CategoriaEntity categoria;
+
+    private String foto;
 }

@@ -7,6 +7,8 @@ import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.enti
 import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.entity.ProductoEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,8 +19,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 //@SessionAttributes("producto") // Forma de mantener el Id. Se debe llamar el atributo como se pasa en crearFormulario() y actualizar().
 @RequiredArgsConstructor
@@ -28,6 +33,8 @@ public class ProductoController {
     private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
     private final ProductHandler productHandler;
     private final CategoryHandler categoryHandler;
+    @Value("${config.uploads.path}")
+    private String uploadPath = "";
 
     @GetMapping({"/productos", "/"})
     public Mono<String> listar(Model model){
@@ -70,7 +77,11 @@ public class ProductoController {
     }
 
     @PostMapping("/productos/")
-    public Mono<String> insertar(@Valid @ModelAttribute("producto") ProductoEntity producto, BindingResult result, Model model/*, SessionStatus status*/){
+    public Mono<String> insertar(
+            @Valid @ModelAttribute("producto") ProductoEntity producto,
+            BindingResult result,
+            Model model/*, SessionStatus status*/,
+            @RequestPart(value = "file") FilePart file){
         // Se sebe registrar la entidad debido a que no se llama igual que el atributo usando @ModelAttribute("")
         if (result.hasErrors()){
             model.addAttribute("titulo", "Error en Validación de Producto");
@@ -82,12 +93,25 @@ public class ProductoController {
         //status.setComplete();
         Mono<CategoriaEntity> categoria = categoryHandler.execGetById(producto.getCategoria().getId());
         return categoria.flatMap(c -> { // Flujo Mono de Categoria se usa para asignar la NUEVA Categoria del Producto
+            if(!file.filename().isEmpty()){
+                producto.setFoto(UUID.randomUUID().toString().concat(file.filename())
+                        .replace(" ", "")
+                        .replace(":", "")
+                        .replace("\\", "")
+                        .replace("$", "")
+                );
+            }
             producto.setCategoria(c);
             return productHandler.execSaveProduct(producto); // FlaMap transforma a Flujo Mono de Producto
         })
                 .doOnNext(p -> log.info("Producto <".concat(producto.getId()).concat(" ").concat(p.getNombre()).concat("> insertado.")))
+                .flatMap(p -> {
+                    if(!file.filename().isEmpty()){
+                        return file.transferTo(new File(uploadPath.concat(producto.getFoto())));
+                    }
+                    return Mono.empty();
+                })
                 .thenReturn("redirect:/productos?error=producto+guardado+con+exito"); // Pero en realidad retorno Flujo Mono de String
-        //      .then(Mono.just("redirect:/productos"));
     }
 
     @GetMapping("/productos/{id}")
