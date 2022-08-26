@@ -24,17 +24,21 @@
                 <th>categoria</th>
                 <th>actualizar</th>
                 <th>eliminar</th>
+                <th>detalle</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="producto: ${productos}">
-                <td th:text="${producto.id}"></td>
+                <!-- Es posible abreviar el ID utilizando helpers: ${#strings.abbreviate(producto.id, 10)} -->
+                <td th:text="${#strings.abbreviate(producto.id, 10)}"></td>
+                <!--<td th:text="${producto.id}"></td>-->
                 <td th:text="${producto.nombre}"></td>
-                <td th:text="${producto.precio}"></td>
-                <td th:text="${producto.createAt}"></td>
+                <td th:text="${#numbers.formatCurrency(producto.precio)}"></td>
+                <td th:text="${#calendars.format(producto.createAt,'dd/MM/yyyy')}"></td>
                 <td th:text="${producto.categoria.nombre}"></td>
                 <td><a th:href="@{/productos/} + ${producto.id}">editar</a></td>
                 <td><a th:href="@{/productos/el/} + ${producto.id}">borrar</a></td>
+                <td><a th:href="@{/productos/re/} + ${producto.id}">ver</a></td>
             </tr>
             </tbody>
         </table>
