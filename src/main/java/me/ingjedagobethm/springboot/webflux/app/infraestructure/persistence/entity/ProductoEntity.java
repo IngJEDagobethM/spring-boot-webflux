@@ -26,8 +26,9 @@ public class ProductoEntity {
     private Double precio;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createAt;
-    
+
     @Valid
+    @NotNull
     private CategoriaEntity categoria;
 
     private String foto;
