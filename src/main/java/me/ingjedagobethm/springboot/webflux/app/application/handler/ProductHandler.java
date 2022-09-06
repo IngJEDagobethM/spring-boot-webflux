@@ -3,7 +3,10 @@ package me.ingjedagobethm.springboot.webflux.app.application.handler;
 import lombok.RequiredArgsConstructor;
 import me.ingjedagobethm.springboot.webflux.app.domain.service.ProductService;
 import me.ingjedagobethm.springboot.webflux.app.infraestructure.persistence.entity.ProductoEntity;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -49,5 +52,33 @@ public class ProductHandler {
 
     public Mono<Void> execDeleteProduct(ProductoEntity productoEntity){
         return productService.deleteProduct(productoEntity);
+    }
+
+    public Mono<ServerResponse> execGetProductsRouter(ServerRequest request){
+        return productService.getProductsRouter(request);
+    }
+
+    public Mono<ServerResponse> execGetProductByIdRouter(ServerRequest request){
+        return productService.getProductByIdRouter(request);
+    }
+
+    public Mono<ServerResponse> execSaveProductRouter(ServerRequest request){
+        return productService.saveProductRouter(request);
+    }
+
+    public Mono<ServerResponse> execEditProductRouter(ServerRequest request){
+        return productService.editProductRouter(request);
+    }
+
+    public Mono<ServerResponse> execDeleteProductRouter(ServerRequest request){
+        return productService.deleteProductRouter(request);
+    }
+
+    public Mono<ServerResponse> execUploadRouter(ServerRequest request){
+        return productService.uploadRouter(request);
+    }
+
+    public Mono<ServerResponse> execUploadProductRouter(ServerRequest request){
+        return productService.uploadProductRouter(request);
     }
 }
