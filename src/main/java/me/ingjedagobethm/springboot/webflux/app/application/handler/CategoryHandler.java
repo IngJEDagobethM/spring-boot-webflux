@@ -28,4 +28,8 @@ public class CategoryHandler {
     public Mono<Void> execDropCollection(String colection){
         return  categoryService.dropCollection(colection);
     }
+
+    public Mono<CategoriaEntity> execGetByNombre(String nombre){
+        return categoryService.getCategoryByNombre(nombre);
+    }
 }

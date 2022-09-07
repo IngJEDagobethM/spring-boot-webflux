@@ -35,4 +35,9 @@ public class CategoriaRepositoryImpl  implements CategoryRepository {
     public Mono<Void> dropColection(String colection) {
         return mongoTemplate.dropCollection(colection);
     }
+
+    @Override
+    public Mono<CategoriaEntity> getCategoryByNombre(String nombre) {
+        return categoriaDao.findByNombre(nombre);
+    }
 }

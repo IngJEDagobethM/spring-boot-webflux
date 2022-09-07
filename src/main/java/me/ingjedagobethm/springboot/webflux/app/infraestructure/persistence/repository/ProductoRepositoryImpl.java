@@ -44,4 +44,9 @@ public class ProductoRepositoryImpl implements ProductRepository {
     public Mono<Void> deleteProduct(ProductoEntity productoEntity) {
         return productoDao.delete(productoEntity);
     }
+
+    @Override
+    public Mono<ProductoEntity> getProductByNombre(String nombre) {
+        return productoDao.findByNombre(nombre);
+    }
 }

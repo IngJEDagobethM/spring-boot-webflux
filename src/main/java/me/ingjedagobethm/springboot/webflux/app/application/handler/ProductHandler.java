@@ -81,4 +81,8 @@ public class ProductHandler {
     public Mono<ServerResponse> execUploadProductRouter(ServerRequest request){
         return productService.uploadProductRouter(request);
     }
+
+    public Mono<ProductoEntity> execFindByNombre(String nombre){
+        return productService.getProductByNombre(nombre);
+    }
 }

@@ -9,4 +9,5 @@ public interface CategoryRepository {
     Mono<CategoriaEntity> getCategoryById(String id);
     Mono<CategoriaEntity> saveCategory(CategoriaEntity categoriaEntity);
     Mono<Void> dropColection(String colection);
+    Mono<CategoriaEntity> getCategoryByNombre(String nombre);
 }

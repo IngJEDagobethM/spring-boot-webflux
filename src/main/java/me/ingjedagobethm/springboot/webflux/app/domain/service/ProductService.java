@@ -209,4 +209,8 @@ public class ProductService {
                         .body(BodyInserters.fromValue(p))
                 );
     }
+
+    public Mono<ProductoEntity> getProductByNombre(String nombre){
+        return productRepository.getProductByNombre(nombre);
+    }
 }

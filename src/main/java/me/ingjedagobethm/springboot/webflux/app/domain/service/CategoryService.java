@@ -28,4 +28,8 @@ public class CategoryService {
     public Mono<Void> dropCollection(String colection){
         return  categoryRepository.dropColection(colection);
     }
+
+    public Mono<CategoriaEntity> getCategoryByNombre(String nombre){
+        return categoryRepository.getCategoryByNombre(nombre);
+    }
 }
